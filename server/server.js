@@ -2,7 +2,7 @@
 import express from 'express'
 import cors from 'cors'
 
-const mockData = [
+let mockData = [
     {
         "id": 1,
         "name": "Vanilla Coke",
@@ -53,6 +53,45 @@ app.post('/newDrink', (request, response) => {
 
     response.send(mockData)
 })
+
+app.delete('/drink/:id', (request, response) => {
+    console.log('PARAMS', request.params)
+
+    const idToDelete = Number(request.params.id)
+
+    mockData = mockData.filter((el) => el.id !== idToDelete)
+
+    response.send(mockData)
+})
+
+app.put('/drink/:id', (request, response) => {
+    // grab type value from the request body
+    const type = request.body.type
+
+    // convert parameter value to a number
+    const idToEdit = Number(request.params.id)
+
+    // setup variable to hold the index of the item we want to edit
+    let index;
+
+    // loop over mockData to find the element with the matching id, and update index value
+    mockData.forEach((el, i) => {
+        if(el.id === idToEdit){
+            index = i
+        }
+    })
+
+    if(index){
+        if(type === 'plus'){
+            mockData[index].popularity++
+        }else if(type === 'minus'){
+            mockData[index].popularity--
+        }
+    }
+
+    response.send(mockData)
+})
+
 
 
 // Open server using app.listen
